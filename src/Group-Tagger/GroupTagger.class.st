@@ -2,22 +2,29 @@ Class {
 	#name : #GroupTagger,
 	#superclass : #Object,
 	#instVars : [
-		'modelId'
+		'tagColors',
+		'colorMap',
+		'currentModel',
+		'projectName'
 	],
 	#category : #'Group-Tagger'
 }
 
+{ #category : #'as yet unclassified' }
+GroupTagger >> assignColors [
+"assign colors to tags in the model; nonexisting tags will be created"
+	colorMap keysDo: [ :key | (currentModel tagNamed: projectName , '-' , key) color: (Color fromHexString: (colorMap at: key))].
+]
+
 { #category : #running }
-GroupTagger >> doTagging: file tag: tagName [
-	| modelList |
-	modelList := MooseModel root.
-	modelId < modelList size ifTrue: [ 
-		file tagWith: ((modelList at: modelId) tagNamed: tagName) ]
+GroupTagger >> doTagging: entity tag: tagName [
+"tag entity, add project prefix"
+	entity tagWith: (currentModel tagNamed: projectName,'-',tagName  )
 ]
 
 { #category : #running }
 GroupTagger >> getParent: entity pathString: pathString [
-
+"check if entity has a parent, and get its name recursively, returns full path"
 	| hasParent |
 	entity isNotNil
 		ifTrue: [ 
@@ -37,11 +44,12 @@ GroupTagger >> getParent: entity pathString: pathString [
 ]
 
 { #category : #initialization }
-GroupTagger >> initialize: path group: group modelId: id tag: tag [
-
-	| splittedPath |
-	modelId := id.
+GroupTagger >> initialize: path tag: tag [
+"split path, search for files matching the full path inside the group"
+	| splittedPath group|
 	splittedPath := path splitOn: '/'.
+	group := (currentModel select: [:e | e name = (splittedPath last) ]).
+	self assignColors.
 	self
 		searchEntity: splittedPath
 		originalPath: path
@@ -51,6 +59,7 @@ GroupTagger >> initialize: path group: group modelId: id tag: tag [
 
 { #category : #running }
 GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group tag: tagName [
+"search for full file path, compare if equals path provided"
 	| listOfMatches gatheredPath |
 	listOfMatches := group select: [ :f | f name = (splittedPath last) ].
 	listOfMatches do: [ :f | 
@@ -60,4 +69,22 @@ GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group t
 						self doTagging: f tag: tagName.
 					]
 			]
+]
+
+{ #category : #initialization }
+GroupTagger >> setColorMap: dict [
+"set color map that will be used in tag creation"
+	colorMap := dict
+]
+
+{ #category : #initialization }
+GroupTagger >> setModel:  modelId [
+"set model that will store the tags"
+	currentModel := (MooseModel root at: modelId).
+]
+
+{ #category : #initialization }
+GroupTagger >> setProjectName: name [
+"define tag prefix"
+	projectName := name.
 ]
