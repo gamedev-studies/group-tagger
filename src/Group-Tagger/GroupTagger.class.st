@@ -44,17 +44,25 @@ GroupTagger >> getParent: entity pathString: pathString [
 ]
 
 { #category : #initialization }
-GroupTagger >> initialize: path tag: tag [
-"split path, search for files matching the full path inside the group"
-	| splittedPath group|
-	splittedPath := path splitOn: '/'.
-	group := (currentModel select: [:e | e name = (splittedPath last) ]).
+GroupTagger >> initialize: target tag: tagName recursive: recursive [
+	"if recursive=false, search for target in model and tag; if recursive=true, split path, search for files matching the full path inside the group"
+
+	| splittedPath group |
 	self assignColors.
-	self
-		searchEntity: splittedPath
-		originalPath: path
-		on: group
-		tag: tag
+
+	recursive
+		ifTrue: [ 
+			splittedPath := target splitOn: '/'.
+			group := currentModel select: [ :e | e name = splittedPath last ].
+
+			self
+				searchEntity: splittedPath
+				originalPath: target
+				on: group
+				tag: tagName ]
+		ifFalse: [ 
+			group := currentModel select: [ :e | e name = target ].
+			group do: [ :e | self doTagging: e tag: tagName ] ]
 ]
 
 { #category : #running }
