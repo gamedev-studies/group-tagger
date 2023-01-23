@@ -7,7 +7,7 @@ On a Moose 10 image, execute the following code snippet in a Playground:
 ```Smalltalk
 Metacello new
     baseline: 'group-tagger';
-    repository: 'github://gamedev-studies/group-tagger.git';
+    repository: 'https://github.com/gamedev-studies/group-tagger.git';
     load.
 ```
 
@@ -31,6 +31,7 @@ tagger setProjectName: 'SoftwareSystem'.
 foldersTags keys do: [ :path | 
     tagger initialize: path tag: (foldersTags at: path) recursive: true.
 ]
+```
 
 ## Usage example with Famix-CPP
 ```Smalltalk
