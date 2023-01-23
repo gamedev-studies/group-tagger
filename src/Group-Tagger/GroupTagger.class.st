@@ -1,15 +1,52 @@
 Class {
 	#name : #GroupTagger,
 	#superclass : #Object,
-	#instVars : [],
+	#instVars : [
+		'modelId'
+	],
 	#category : #'Group-Tagger'
 }
 
+{ #category : #running }
+GroupTagger >> doTagging: file tag: tagName [
+	| modelList |
+	modelList := MooseModel root.
+	modelId < modelList size ifTrue: [ 
+		file tagWith: ((modelList at: modelId) tagNamed: tagName) ]
+]
+
+{ #category : #running }
+GroupTagger >> getParent: entity pathString: pathString [
+
+	| hasParent |
+	entity isNotNil
+		ifTrue: [ 
+			hasParent := entity allDeclaredProperties select: [ :each | 
+				             each name = 'parentFolder' ].
+			hasParent isNotEmpty
+				ifTrue: [ 
+					pathString = ''
+						ifTrue: [ 
+						^ self getParent: entity parentFolder pathString: entity name ]
+						ifFalse: [ 
+							^ self
+								  getParent: entity parentFolder
+								  pathString: entity name , '/' , pathString ] ]
+				ifFalse: [ ^ pathString ] ]
+		ifFalse: [ ^ pathString ]
+]
+
 { #category : #initialization }
-GroupTagger >> initialize: path model: model tag: tag [
-	|splittedPath|
+GroupTagger >> initialize: path group: group modelId: id tag: tag [
+
+	| splittedPath |
+	modelId := id.
 	splittedPath := path splitOn: '/'.
-	self searchEntity: splittedPath originalPath: path on: model tag: tag.
+	self
+		searchEntity: splittedPath
+		originalPath: path
+		on: group
+		tag: tag
 ]
 
 { #category : #running }
@@ -18,47 +55,9 @@ GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group t
 	listOfMatches := group select: [ :f | f name = (splittedPath last) ].
 	listOfMatches do: [ :f | 
 				gatheredPath := (self getParent: f pathString: '').
-				Transcript show: originalPath. 
-				Transcript show: '='. 
-				Transcript show: gatheredPath. 
-				Transcript cr.
 			   originalPath = gatheredPath
 					ifTrue: [
-						Transcript show: 'tag file: ', (f name), ' with ', tagName. 
-						Transcript cr.
-					]
-					ifFalse: [
-						Transcript show: 'do not tag'. 
-						Transcript cr.
+						self doTagging: f tag: tagName.
 					]
 			]
 ]
-
-{ #category : #running }
-GroupTagger >> getParent: entity pathString: pathString [
-	| hasParent |
-	entity isNotNil
-		ifTrue: [ 
-			hasParent := entity allDeclaredProperties select: [ :each | each name = 'parentFolder' ].
-			hasParent isNotEmpty
-				ifTrue: [ 
-						pathString = ''
-						    ifTrue: [ ^self getParent: (entity parentFolder) pathString: (entity name) ]
-						    ifFalse: [ ^self getParent: (entity parentFolder) pathString: (entity name , '/' , pathString) ]
-						]
-				ifFalse: [ ^ pathString ] 
-		]
-		ifFalse: [ ^ pathString ]
-]
-
-{ #category : #running }
-GroupTagger >> doTagging: group tag: tagName parentName: parent [
-    Transcript show: 'Called'.
-	Transcript cr.
-    group do: [:f | 
-        f parentFolder name = parent
-            ifTrue: [ Transcript show: 'Tag ', f name, ' with ', tagName. Transcript cr. ]    
-    ]
-]
-
-
