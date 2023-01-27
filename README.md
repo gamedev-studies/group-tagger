@@ -6,8 +6,8 @@ On a Moose 10 image, execute the following code snippet in a Playground:
 
 ```Smalltalk
 Metacello new
-    baseline: 'group-tagger';
-    repository: 'https://github.com/gamedev-studies/group-tagger.git';
+    baseline: 'GroupTagger';
+    repository: 'github://gamedev-studies/group-tagger';
     load.
 ```
 

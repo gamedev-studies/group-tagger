@@ -12,15 +12,9 @@ BaselineOfGroupTagger >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [ 
-		self neoCsv: spec.
-		spec package: 'Group-Tagger'.
+        "Packages"
+			spec
+                package: 'Group-Tagger' 
+                with: [ spec repository: 'github://svenvc/NeoCSV' ]
     ]
-]
-
-{ #category : #dependencies }
-BaselineOfGroupTagger >> neoCsv: spec [
-
-	spec
-		baseline: 'NeoCSV'
-		with: [ spec repository: 'https://github.com/svenvc/NeoCSV' ]
 ]
