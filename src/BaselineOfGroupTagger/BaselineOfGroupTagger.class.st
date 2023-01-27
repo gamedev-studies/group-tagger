@@ -1,5 +1,5 @@
 "
-Baseline of group tagger
+Baseline of GroupTagger
 "
 Class {
 	#name : #BaselineOfGroupTagger,
