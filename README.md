@@ -7,16 +7,26 @@ On a Moose 10 image, execute the following code snippet in a Playground:
 ```Smalltalk
 Metacello new
     baseline: 'GroupTagger';
-    repository: 'github://gamedev-studies/group-tagger';
+    repository: 'github://gamedev-studies/group-tagger:main';
+    onConflict: [ :ex | ex useIncoming ];
+    onUpgrade: [ :ex | ex useIncoming ];
+	onDowngrade: [ :ex | ex useLoaded ];
     load.
 ```
 
-## Usage example in a generic Moose model
-```Smalltalk
-foldersTags := Dictionary newFrom: {
-'./SoftwareSystem/Core' -> 'Core' . './SoftwareSystem/Foo/Bar' -> 'ImportantSubsystem' . './SoftwareSystem/Core/Foo' -> 'ImportantSubsystem'}
-tagsColors := Dictionary newFrom: { 'Core' -> '#f0e442'. 'ImportantSubsystem' -> '#ff0000' }.
+## Usage example with a generic Moose model
+Let's consider you have a SoftwareSystem.csv similar to this:
+```
+subsystem,entity_name
+veggie,carrot
+fruit,banana
+veggie,broccoli
+fruit,apple
+```
 
+Instantiate and parametrize the tagger like this:
+```
+Smalltalk
 "instantiate a new tagger and settings"
 tagger := GroupTagger new.
 
@@ -24,21 +34,25 @@ tagger := GroupTagger new.
 tagger setModel: 1.
 
 "set tag colors and project name"
-tagger setColorMap: tagsColors.
+tagger setColorMap: (Dictionary newFrom: { 'fruit' -> '#f5e642'. 'veggie' -> '#42f545' }).
 tagger setProjectName: 'SoftwareSystem'.
 
-"for each file, get folders with name and tag"
-foldersTags keys do: [ :path | 
-    tagger initialize: path tag: (foldersTags at: path) recursive: true.
-]
+"search the model for entities with each entity_name, tag with the respective subsystem"
+tagger initialize: '/home/user/Documents/SoftwareSystem.csv' recursive: false
 ```
 
 ## Usage example with Famix-CPP
-```Smalltalk
-foldersTags := Dictionary newFrom: {
-'./SoftwareSystem/Core' -> 'Core' . './SoftwareSystem/Foo/Bar' -> 'ImportantSubsystem' . './SoftwareSystem/Core/Foo' -> 'ImportantSubsystem'}
-tagsColors := Dictionary newFrom: { 'Core' -> '#f0e442'. 'ImportantSubsystem' -> '#ff0000' }.
+Let's consider you have a SoftwareSystem.csv similar to this:
+```
+subsystem,path_from_root
+Core,./SoftwareSystem/Core
+ImportantSubsystem,./SoftwareSystem/Foo/Bar
+ImportantSubsystem,./SoftwareSystem/Core/Foo
+```
 
+Instantiate and parametrize the tagger like this:
+```
+Smalltalk
 "instantiate a new tagger and settings"
 tagger := GroupTagger new.
 
@@ -46,11 +60,10 @@ tagger := GroupTagger new.
 tagger setModel: 1.
 
 "set tag colors and project name"
-tagger setColorMap: tagsColors.
+tagger setColorMap: (Dictionary newFrom: { 'Core' -> '#f0e442'. 'ImportantSubsystem' -> '#ff0000' }).
 tagger setProjectName: 'SoftwareSystem'.
 
-"for each file, get folders with name and tag"
-foldersTags keys do: [ :path | 
-    tagger initialize: path tag: (foldersTags at: path) recursive: true.
-]
+"search the model for each path_from_root, tag file/folder with respective subsystem"
+tagger initialize: '/home/user/Documents/SoftwareSystem.csv' recursive: true
 ```
+
