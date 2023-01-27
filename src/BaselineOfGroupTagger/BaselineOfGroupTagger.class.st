@@ -15,6 +15,6 @@ BaselineOfGroupTagger >> baseline: spec [
         "Packages"
 			spec
                 package: 'Group-Tagger' 
-                with: [ spec repository: 'github://svenvc/NeoCSV' ]
+                with: [ spec repository: 'github://svenvc/NeoCSV:master/repository' ]
     ]
 ]
