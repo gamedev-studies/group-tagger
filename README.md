@@ -7,7 +7,10 @@ On a Moose 10 image, execute the following code snippet in a Playground:
 ```Smalltalk
 Metacello new
     baseline: 'GroupTagger';
-    repository: 'github://gamedev-studies/group-tagger';
+    repository: 'github://gamedev-studies/group-tagger:main';
+    onConflict: [ :ex | ex useIncoming ];
+    onUpgrade: [ :ex | ex useIncoming ];
+	onDowngrade: [ :ex | ex useLoaded ];
     load.
 ```
 
