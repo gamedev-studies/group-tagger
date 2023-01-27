@@ -5,7 +5,8 @@ Class {
 		'tagColors',
 		'colorMap',
 		'currentModel',
-		'projectName'
+		'projectName',
+		'csvPath'
 	],
 	#category : #'Group-Tagger'
 }
@@ -44,7 +45,51 @@ GroupTagger >> getParent: entity pathString: pathString [
 ]
 
 { #category : #initialization }
-GroupTagger >> initialize: target tag: tagName recursive: recursive [
+GroupTagger >> initialize: pathToCsv recursive: recursive [
+
+	| foldersTags pathColName |
+	self setCSVPath: pathToCsv.
+	pathColName := 'name'.
+
+	recursive ifTrue: [ pathColName := 'path_from_root' ].
+
+	foldersTags := self loadCSV: pathColName.
+	foldersTags keysDo: [ :path | 
+		self run: path tag: (foldersTags at: path) recursive: recursive ]
+]
+
+{ #category : #'as yet unclassified' }
+GroupTagger >> loadCSV: pathColName [
+
+	"Load CSV with file paths and their respective subsystems"
+
+	| subsysColName columnArray foldersTags |
+	csvPath
+		ifTrue: [ 
+			subsysColName := 'subsystem'.
+			"slice from 2 so we ignore the header line"
+			columnArray := (csvPath asFileReference readStreamDo: [ :stream | 
+				               (NeoCSVReader on: stream readStream)
+					               namedColumnsConfiguration;
+					               upToEnd ]) sliceFrom: 2.
+			foldersTags := Dictionary new.
+			columnArray do: [ :item | "Check if first character of path equals dot"
+				((item at: pathColName) at: 1) = '.'
+					ifTrue: [ 
+						foldersTags
+							at: (item at: pathColName)
+							put: (item at: subsysColName) ]
+					ifFalse: [ 
+						self error:
+							'Your file paths must start with dot, which represents the base folder' ] ].
+			^ foldersTags ]
+		ifFalse: [ 
+			self error:
+				'You must inform a path to a CSV file containing your file paths and their respective subsystems' ]
+]
+
+{ #category : #initialization }
+GroupTagger >> run: target tag: tagName recursive: recursive [
 	"if recursive=false, search for target in model and tag; if recursive=true, split path, search for files matching the full path inside the group"
 
 	| splittedPath group |
@@ -77,6 +122,11 @@ GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group t
 						self doTagging: f tag: tagName.
 					]
 			]
+]
+
+{ #category : #initialization }
+GroupTagger >> setCSVPath: path [
+	csvPath := path
 ]
 
 { #category : #initialization }
