@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #baselines }
-BaselineOfFamixCpp >> baseline: spec [
+BaselineOfGroupTagger >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [ 
@@ -18,7 +18,7 @@ BaselineOfFamixCpp >> baseline: spec [
 ]
 
 { #category : #dependencies }
-BaselineOfFamixCpp >> neoCsv: spec [
+BaselineOfGroupTagger >> neoCsv: spec [
 
 	spec
 		baseline: 'NeoCSV'
