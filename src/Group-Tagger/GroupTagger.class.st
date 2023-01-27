@@ -64,7 +64,7 @@ GroupTagger >> loadCSV: pathColName [
 	"Load CSV with file paths and their respective subsystems"
 
 	| subsysColName columnArray foldersTags |
-	csvPath
+	csvPath isNotNil 
 		ifTrue: [ 
 			subsysColName := 'subsystem'.
 			"slice from 2 so we ignore the header line"
@@ -74,7 +74,7 @@ GroupTagger >> loadCSV: pathColName [
 					               upToEnd ]) sliceFrom: 2.
 			foldersTags := Dictionary new.
 			columnArray do: [ :item | "Check if first character of path equals dot"
-				((item at: pathColName) at: 1) = '.'
+				((item at: pathColName) at: 1) = $.
 					ifTrue: [ 
 						foldersTags
 							at: (item at: pathColName)
