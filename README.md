@@ -50,8 +50,7 @@ ImportantSubsystem,./SoftwareSystem/Core/Foo
 ```
 
 Instantiate and parametrize the tagger like this:
-```
-Smalltalk
+```Smalltalk
 "instantiate a new tagger and settings"
 tagger := GroupTagger new.
 
