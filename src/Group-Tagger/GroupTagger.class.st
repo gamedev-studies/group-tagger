@@ -136,9 +136,9 @@ GroupTagger >> setColorMap: dict [
 ]
 
 { #category : #initialization }
-GroupTagger >> setModel:  modelId [
+GroupTagger >> setModel:  model [
 "set model that will store the tags"
-	currentModel := (MooseModel root at: modelId).
+	currentModel := model.
 ]
 
 { #category : #initialization }
