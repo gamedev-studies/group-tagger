@@ -10,7 +10,7 @@ Metacello new
     repository: 'github://gamedev-studies/group-tagger:main';
     onConflict: [ :ex | ex useIncoming ];
     onUpgrade: [ :ex | ex useIncoming ];
-	onDowngrade: [ :ex | ex useLoaded ];
+    onDowngrade: [ :ex | ex useLoaded ];
     load.
 ```
 
