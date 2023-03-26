@@ -67,11 +67,11 @@ GroupTagger >> loadCSV: pathColName [
 	csvPath isNotNil 
 		ifTrue: [ 
 			subsysColName := 'subsystem'.
-			"slice from 2 so we ignore the header line"
+			"slice from 1 so we ignore the header line"
 			columnArray := (csvPath asFileReference readStreamDo: [ :stream | 
 				               (NeoCSVReader on: stream readStream)
 					               namedColumnsConfiguration;
-					               upToEnd ]) sliceFrom: 2.
+					               upToEnd ]) sliceFrom: 1.
 			foldersTags := Dictionary new.
 			columnArray do: [ :item | "Check if first character of path equals dot"
 				((item at: pathColName) at: 1) = $.
