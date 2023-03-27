@@ -10,7 +10,7 @@ Metacello new
     repository: 'github://gamedev-studies/group-tagger:main';
     onConflict: [ :ex | ex useIncoming ];
     onUpgrade: [ :ex | ex useIncoming ];
-	onDowngrade: [ :ex | ex useLoaded ];
+    onDowngrade: [ :ex | ex useLoaded ];
     load.
 ```
 
@@ -29,8 +29,8 @@ Instantiate and parametrize the tagger like this:
 "instantiate a new tagger and settings"
 tagger := GroupTagger new.
 
-"set index of the Moose model you want to query"
-tagger setModel: 1.
+"set Moose model you want to query"
+tagger setModel: myModel.
 
 "set tag colors and project name"
 tagger setColorMap: (Dictionary newFrom: { 'fruit' -> '#f5e642'. 'veggie' -> '#42f545' }).
@@ -50,13 +50,12 @@ ImportantSubsystem,./SoftwareSystem/Core/Foo
 ```
 
 Instantiate and parametrize the tagger like this:
-```
-Smalltalk
+```Smalltalk
 "instantiate a new tagger and settings"
 tagger := GroupTagger new.
 
-"set index of the Moose model you want to query"
-tagger setModel: 1.
+"set Moose model you want to query"
+tagger setModel: myModel.
 
 "set tag colors and project name"
 tagger setColorMap: (Dictionary newFrom: { 'Core' -> '#f0e442'. 'ImportantSubsystem' -> '#ff0000' }).
