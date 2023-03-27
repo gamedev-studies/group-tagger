@@ -117,7 +117,7 @@ GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group t
 	listOfMatches := group select: [ :f | (f name trimBoth) = (splittedPath last) ].
 	listOfMatches do: [ :f | 
 				gatheredPath := (self getParent: f pathString: '').
-			   originalPath = gatheredPath
+			   originalPath trimBoth = gatheredPath trimBoth
 					ifTrue: [
 						self doTagging: f tag: tagName.
 					]
