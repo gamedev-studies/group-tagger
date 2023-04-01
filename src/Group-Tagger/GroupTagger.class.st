@@ -6,7 +6,8 @@ Class {
 		'colorMap',
 		'currentModel',
 		'projectName',
-		'csvPath'
+		'csvPath',
+		'autotagFolderContents'
 	],
 	#category : #'Group-Tagger'
 }
@@ -19,8 +20,17 @@ GroupTagger >> assignColors [
 
 { #category : #running }
 GroupTagger >> doTagging: entity tag: tagName [
-"tag entity, add project prefix"
-	entity tagWith: (currentModel tagNamed: projectName,'-',tagName  )
+
+	| isFolder hasFiles |
+	entity tags isNotEmpty ifTrue: [ entity removeTags ].
+	entity tagWith: (currentModel tagNamed: projectName , '-' , tagName).
+	autotagFolderContents ifFalse: [ ^ self ].
+	isFolder := entity name matchesRegex: '^((?!\.).)*$'.
+	isFolder ifFalse: [ ^ self ].
+	hasFiles := entity allDeclaredProperties select: [ :e | 
+		            e name = 'files' ].
+	hasFiles notEmpty ifTrue: [ 
+		entity files do: [ :e | self doTagging: e tag: tagName ] ]
 ]
 
 { #category : #running }
@@ -122,6 +132,14 @@ GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group t
 						self doTagging: f tag: tagName.
 					]
 			]
+]
+
+{ #category : #initialization }
+GroupTagger >> setAutotagFolderContents: state [
+
+	"set auto tagging (recursive)"
+
+	autotagFolderContents := state
 ]
 
 { #category : #initialization }
