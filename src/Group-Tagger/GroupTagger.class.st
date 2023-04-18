@@ -122,16 +122,16 @@ GroupTagger >> run: target tag: tagName recursive: recursive [
 
 { #category : #running }
 GroupTagger >> searchEntity: splittedPath originalPath: originalPath on: group tag: tagName [
-"search for full file path, compare if equals path provided"
+
+	"search for full file path, compare if equals path provided"
+
 	| listOfMatches gatheredPath |
-	listOfMatches := group select: [ :f | (f name trimBoth) = (splittedPath last) ].
+	listOfMatches := group select: [ :f | 
+		                 f name trimBoth = splittedPath last ].
 	listOfMatches do: [ :f | 
-				gatheredPath := (self getParent: f pathString: '').
-			   originalPath trimBoth = gatheredPath trimBoth
-					ifTrue: [
-						self doTagging: f tag: tagName.
-					]
-			]
+		gatheredPath := self getParent: f pathString: ''.
+		originalPath trimBoth = gatheredPath trimBoth ifTrue: [ 
+			self doTagging: f tag: tagName ] ]
 ]
 
 { #category : #initialization }
