@@ -14,6 +14,9 @@ BaselineOfGroupTagger >> baseline: spec [
 	spec for: #common do: [ 
         "Packages"
 		self neoCSV: spec.
+
+	spec package: 'GroupTagger'
+			with: [ spec requires: #( 'neoCSV' ) ].
     ]
 
 ]
