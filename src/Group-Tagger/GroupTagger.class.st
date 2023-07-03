@@ -28,9 +28,9 @@ GroupTagger >> doTagging: entity tag: tagName [
 	isFolder := entity name matchesRegex: '^((?!\.).)*$'.
 	isFolder ifFalse: [ ^ self ].
 	hasFiles := entity allDeclaredProperties select: [ :e | 
-		            e name = 'files' ].
+		            e name = 'children' ].
 	hasFiles notEmpty ifTrue: [ 
-		entity files do: [ :e | self doTagging: e tag: tagName ] ]
+		entity children do: [ :e | self doTagging: e tag: tagName ] ]
 ]
 
 { #category : #running }
